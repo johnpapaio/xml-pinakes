@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <title>Διαχείριση XML συλλογής με χρήση JS AJAX</title>
+            <meta content="width=device-width, initial-scale=1" name="viewport">
+            <style>
+            
+                        table {
+                          table-layout: fixed;
+                          width: 100%;
+                          border-collapse: collapse;
+                          border: 3px solid ;
+                        }
+    
+                        th, td {
+                          padding: 3px;
+                          border: 1px solid #999;
+                            text-align: left;
+                        }
+    
+                        .button-7 {
+                          background-color: #0095ff;
+                          border: 1px solid transparent;
+                          border-radius: 3px;
+                          box-shadow: rgba(255, 255, 255, .4) 0 1px 0 0 inset;
+                          box-sizing: border-box;
+                          color: #fff;
+                          cursor: pointer;
+                          display: inline-block;
+                          font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+                          font-size: 13px;
+                          font-weight: 400;
+                          line-height: 1.15385;
+                          margin: 0;
+                          outline: none;
+                          padding: 8px .8em;
+                          position: relative;
+                          text-align: center;
+                          text-decoration: none;
+                          user-select: none;
+                          -webkit-user-select: none;
+                          touch-action: manipulation;
+                          vertical-align: baseline;
+                          white-space: nowrap;
+                        }
+    
+                        .button-7:hover,
+                        .button-7:focus {
+                          background-color: #07c;
+                        }
+    
+                        .button-7:focus {
+                          box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+                        }
+    
+                        .button-7:active {
+                          background-color: #0064bd;
+                          box-shadow: none;
+                        }
+            </style>
+                
+    </head>
+    <body style="background-color:LightGoldenRodYellow;">
+    <h2 style="text-align: center;">Πανεπιστήμιο Αιγαίου</h2>
+    <h2 style="text-align: center;">Τμήμα Πολιτισμικής Τεχνολογίας και Επικοινωνίας</h2>
+    <h4>Μάθημα: Προγραμματισμός στο Παγκόσμιο Ιστό (6ο Εξάμηνο)</h4>
+    <h4>Tίτλος Εργασίας: Εργασία Διαχείριση XML συλλογής με χρήση JS AJAX</h4>
+    <h4>Ονοματεπώνυμο Φοιτητή: ΙΩΑΝΝΗΣ ΠΑΠΑΙΩΑΝΝΟΥ/ IOANNIS PAPAIOANNOIU (Κώδ. Φοιτητή: ct22122)</h4>
+    <hr>
+    <h5>Λύση Εργασίας</h5>
+    1. Δημιουργία αρχείου XML: Δημιουργήθηκε το αρχείο <a href="pinakes.xml">paintings.xml</a> με εγγραφές από έργα γνωστων ζωγράφων.
+    <br>
+    2. Δημιουργήθηκαν τα παρακάτω κουμπιά που εκτελούν τις ενέργειες που ζητά η εκφώνηση:
+    <br><br>
+        <button id="1" type="button" class="button-7" onclick="loadDoc(this.getAttribute('id'))">Α: Φόρτωση Δεδομένων</button>
+        <button id="2" type="button" class="button-7" onclick="loadDoc(this.getAttribute('id'))">Β: Ταξινόμηση Δεδομένων</button>
+        <button id="3" type="button" class="button-7" onclick="loadDoc(this.getAttribute('id'))">Γ: Εμφάνιση Νεότερου</button>
+        <button id="4" type="button" class="button-7" onclick="loadDoc(this.getAttribute('id'))">Δ: Εμφάνιση Φθηνότερου</button>
+    <br><br>
+    
+    <div style="font-weight: bold; text-align: center;  border: 3px solid green;" id="caption"></div>
+    <br>
+    <table id="paintings"></table>
+    
+    
+    <script>
+    //xeirismo XML mesw AJAX
+    function loadDoc(choice) {
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+            
+            
+            switch(choice) {
+                case "1":
+                    myFunction(this);
+                    break;
+                case "2":
+                    myFunction2(this);
+                    break;
+                case "3":
+                    myFunction3(this);
+                    break;
+                case "4":
+                    myFunction4(this);
+                    break;	
+              default:
+            }
+        
+            }
+          };
+          xhttp.open("GET", "pinakes.xml", true);
+          xhttp.send();
+    }
+    
+    //button 1 erwthma 1
+    function myFunction(xml) {
+          var i;
+          var xmlDoc = xml.responseXML;
+          var table="<tr><th>A/A(Code)</th><th>Title</th><th>Painter</th><th>Year</th><th>Price(€)</th></tr>";
+          var x = xmlDoc.getElementsByTagName("painting");
+          for (i = 0; i <x.length; i++) {
+            table += 
+            "<tr><td>" + i + 
+            "</td><td>" + x[i].getElementsByTagName("title")[0].childNodes[0].nodeValue + 
+            "</td><td>" + x[i].getElementsByTagName("author")[0].childNodes[0].nodeValue +
+            "</td><td>" + x[i].getElementsByTagName("year")[0].childNodes[0].nodeValue +
+            "</td><td>" + numberWithCommas(x[i].getElementsByTagName("price")[0].childNodes[0].nodeValue) +
+            "</td></tr>";
+          }
+          document.getElementById("caption").innerHTML = "1o ερώτημα : Φόρτωση Δεδομένων - Προσπέλαση Αρχείου XML";
+          document.getElementById("paintings").innerHTML = table;
+    }
+    //button 2 erwthma 2
+    function myFunction2(xml) {
+        var A = [];
+        A=fillArrayFromXML(xml);
+        var x =A.sort(function(a,b){ return a[2] > b[2] ? 1 : -1; });
+        var table="<tr><th>A/A(Code)</th><th>Title</th><th>Painter</th><th>Year</th><th>Price(€)</th></tr>";
+        for (i = 0; i <x.length; i++) {
+            table += 
+            "<tr><td>" + x[i][0] + 
+            "</td><td>" + x[i][1] + 
+            "</td><td>" + x[i][2] +
+            "</td><td>" + x[i][3] +
+            "</td><td>" + numberWithCommas(x[i][4]) +
+            "</td></tr>";
+        }
+        document.getElementById("caption").innerHTML = "2o ερώτημα : Ταξινόμηση δεδομένων με βάση το Όνομα του Ζωγράφου";
+        document.getElementById("paintings").innerHTML = table;
+    
+    }
+    //button 3 erwthma 3
+    function myFunction3(xml) {
+        var A = [];
+        A=fillArrayFromXML(xml);
+        var x =A.sort(function(a,b){ return a[3] - b[3] ; });
+        var table="<tr><th>A/A(Code)</th><th>Title</th><th>Painter</th><th>Year</th><th>Price(€)</th></tr>";
+        table += 
+            "<tr><td>" + x[0][0] + 
+            "</td><td>" + x[0][1] + 
+            "</td><td>" + x[0][2] +
+            "</td><td>" + x[0][3] +
+            "</td><td>" + numberWithCommas(x[0][4]) +
+            "</td></tr>";
+        document.getElementById("caption").innerHTML = "3o ερώτημα : Εμφάνιση του Νεότερου Έργου";
+        document.getElementById("paintings").innerHTML = table;
+    
+    }
+    
+    
+    //button 4 erwthma 4
+    function myFunction4(xml) {
+        var A = [];
+        A=fillArrayFromXML(xml);
+        var x =A.sort(function(a,b){ return a[4] - b[4] ; });
+        var table="<tr><th>A/A(Code)</th><th>Title</th><th>Painter</th><th>Year</th><th>Price(€)</th></tr>";
+        table += 
+            "<tr><td>" + x[0][0] + 
+            "</td><td>" + x[0][1] + 
+            "</td><td>" + x[0][2] +
+            "</td><td>" + x[0][3] +
+            "</td><td>" + numberWithCommas(x[0][4]) +
+            "</td></tr>";
+        document.getElementById("caption").innerHTML = "4o ερώτημα : Εμφάνιση του Φτηνότερου Έργου";
+        document.getElementById("paintings").innerHTML = table;
+    
+    }
+    
+    
+    //dhmiourgia pinaka 2diastasewn gia eykolotero xeirismo
+    function fillArrayFromXML(a) {
+    
+        var i;
+        var xmlDoc = a.responseXML;
+        var answers= xmlDoc.getElementsByTagName("painting");
+        var A = [];
+        for (var i = 0; i < answers.length; i++) {
+            A[i] = [];
+            A[i][0] = i;
+            A[i][1] = answers[i].getElementsByTagName("title")[0].childNodes[0].nodeValue;
+            A[i][2] = answers[i].getElementsByTagName("author")[0].childNodes[0].nodeValue;
+            A[i][3] = answers[i].getElementsByTagName("year")[0].childNodes[0].nodeValue;
+            A[i][4] = answers[i].getElementsByTagName("price")[0].childNodes[0].nodeValue;
+                    
+        } 
+        return A;
+    }
+    
+    //morfopoihsh arithmwn me dekadika kai diaxwristika xiliadwn
+    function numberWithCommas(x) {
+        return parseFloat(x).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
+    </script>
+    </body></html><html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Διαχείριση XML συλλογής με χρήση JS AJAX</title>
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+		<style>
+		
+					table {
+					  table-layout: fixed;
+					  width: 100%;
+					  border-collapse: collapse;
+					  border: 3px solid ;
+					}
+
+					th, td {
+					  padding: 3px;
+					  border: 1px solid #999;
+						text-align: left;
+					}
+
+					.button-7 {
+					  background-color: #0095ff;
+					  border: 1px solid transparent;
+					  border-radius: 3px;
+					  box-shadow: rgba(255, 255, 255, .4) 0 1px 0 0 inset;
+					  box-sizing: border-box;
+					  color: #fff;
+					  cursor: pointer;
+					  display: inline-block;
+					  font-family: -apple-system,system-ui,"Segoe UI","Liberation Sans",sans-serif;
+					  font-size: 13px;
+					  font-weight: 400;
+					  line-height: 1.15385;
+					  margin: 0;
+					  outline: none;
+					  padding: 8px .8em;
+					  position: relative;
+					  text-align: center;
+					  text-decoration: none;
+					  user-select: none;
+					  -webkit-user-select: none;
+					  touch-action: manipulation;
+					  vertical-align: baseline;
+					  white-space: nowrap;
+					}
+
+					.button-7:hover,
+					.button-7:focus {
+					  background-color: #07c;
+					}
+
+					.button-7:focus {
+					  box-shadow: 0 0 0 4px rgba(0, 149, 255, .15);
+					}
+
+					.button-7:active {
+					  background-color: #0064bd;
+					  box-shadow: none;
+					}
+		</style>
+			
+</head>
